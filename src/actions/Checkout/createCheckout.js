@@ -39,6 +39,16 @@ export default function createCheckout(context, payload, done) {
             });
         }
 
+        else if (config.stripePayments && config.stripePayments.enabled) {
+
+          dispatchEvents([{
+            'id': 'stripe',
+            'provider': 'stripe',
+            'label': { en: 'Card Payment' },
+            'paymentMethod': 'stripe',
+          }]);
+        }
+
         // 2) Don't fetch payment methods from Switch
         else {
             dispatchEvents();

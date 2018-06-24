@@ -15,7 +15,7 @@ class CheckoutStore extends BaseStore {
         [checkoutActions.CHECKOUT_CREATE]: 'handleCreateRequest',
         [checkoutActions.CHECKOUT_CREATE_SUCCESS]: 'handleCreateSuccess',
         [checkoutActions.CHECKOUT_CREATE_ERROR]: 'handleCreateError',
-        
+
         [checkoutActions.CHECKOUT_SET_PAYMENT_OPTIONS]: 'handleSetPaymentOptions',
 
         [checkoutActions.CHECKOUT_UPDATE]: 'handleUpdateRequest',
@@ -69,7 +69,7 @@ class CheckoutStore extends BaseStore {
     getCheckout() {
         return this.checkout;
     }
-    
+
     getPaymentOptions() {
         let paymentOptions = this.paymentOptions.map(p => p);
         if (this.checkout && this.checkout.paymentOptions) {

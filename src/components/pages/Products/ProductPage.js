@@ -301,10 +301,14 @@ class ProductPage extends React.Component {
                                     </Text>
                                 </div>
                                 <div className="product-page__add">
-                                    <div className="product-page__quantity">
-                                        <QuantitySelector value={this.state.quantity}
-                                                          onChange={this.handleQuantityChange} />
-                                    </div>
+                                {this.state.product.stock > 1 ?
+                                  <div className="product-page__quantity">
+                                      <QuantitySelector value={this.state.quantity}
+                                                        onChange={this.handleQuantityChange} />
+                                  </div>
+                                  :
+                                  ''
+                                }
                                     <div className="product-page__add-buttons">
                                         {this.state.product.stock > 0 ?
                                             <Button type="primary"
@@ -349,7 +353,7 @@ class ProductPage extends React.Component {
                                     );
                                 })}
                             </div>
-                            
+
                             {!this.state.suggestionsLoading && this.state.suggestions.length === 0 ?
                                 <div className="product-page__suggestions product-page__suggestions--no-border"></div>
                                 :

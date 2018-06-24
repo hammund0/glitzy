@@ -11,7 +11,8 @@ export default {
         orderSummary: 'Order Summary',
         shippingInformation: 'Shipping Information',
         title: 'Checkout',
-        tryAgain: 'Try Again'
+        tryAgain: 'Try Again',
+        pleasePay: 'Please pay for your order now. Please note we do not store any of your card details and the payment system uses Stripe which is known to be very secure'
     },
     pt: {
         billingInformation: 'Detalhes de Faturação',

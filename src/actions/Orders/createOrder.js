@@ -21,6 +21,11 @@ export default function createOrder(context, payload, done) {
     context.dispatch(orderActions.ORDER_CREATE);
     context.api.orders.create(payload.checkoutId, payload.cartAccessToken).then(function orderCreateSuccess(order) {
 
+        function dispatchOrderCreatedFail() {
+          context.dispatch(orderActions.ORDER_CREATE_ERROR);
+          done && done();
+        }
+
         function dispatchOrderCreatedSuccessfully() {
 
             let checkout = context.getStore(CheckoutStore).getCheckout();
@@ -68,9 +73,13 @@ export default function createOrder(context, payload, done) {
             done && done();
         }
 
+        if (payload.paymentDetails.provider === 'stripe') {
+          dispatchOrderCreatedSuccessfully();
+        }
+
         // 1) Payment method provided by switch
         // Create charge before notifying of successful order creation
-        if (payload.paymentDetails.provider === 'switch') {
+        else if (payload.paymentDetails.provider === 'switch') {
             let eventsAPIBaseUrl = config.api.atlas.baseUrl;
             let switchJs = new SwitchJs(config.switchPayments.environment, config.switchPayments.publicKey);
             switchJs.charge({
@@ -81,7 +90,7 @@ export default function createOrder(context, payload, done) {
                 eventsUrl: `${eventsAPIBaseUrl}/orders/${order.id}/spwh`,
                 instrument: Object.assign(payload.paymentDetails.instrument, {
                     type: payload.paymentDetails.chargeType,
-                    country: 'PT'
+                    country: 'GB'
                 })
             }).then(function successFn() {
                 dispatchOrderCreatedSuccessfully();

@@ -31,7 +31,7 @@ class HomepageFeaturedCollection extends React.Component {
     //*** Template ***//
 
     render() {
-
+      
         let intlStore = this.context.getStore(IntlStore);
 
         if (this.props.feature && this.props.feature.img) {
@@ -58,7 +58,7 @@ class HomepageFeaturedCollection extends React.Component {
             );
         } else {
             return (
-                <div className="homepage-featured-collection homepage-featured-collection__placeholder"></div>
+                <div />
             );
         }
     }

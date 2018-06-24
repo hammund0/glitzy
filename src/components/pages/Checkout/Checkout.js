@@ -38,6 +38,10 @@ import CheckoutSummary from './CheckoutSummary';
 // Translation data for this component
 import intlData from './Checkout.intl';
 
+// StripeCheckout
+import StripeCheckout from 'react-stripe-checkout';
+import axios from 'axios';
+
 /**
  * Component
  */
@@ -90,6 +94,7 @@ class Checkout extends React.Component {
         useShippingAddressForBilling: true,
         paymentInstrument: {ready: false},
 
+        stripePayModal: false,
         showOrderCreatedModal: false,
         showOrderErrorModal: false
     };
@@ -301,6 +306,9 @@ class Checkout extends React.Component {
     //
 
     handleCheckoutClick = () => {
+      if (config.stripePayments.enabled && this.state.paymentInstrument.provider === 'stripe') {
+        this.setState({stripePayModal: true});
+      } else {
         let payload = {
             checkoutId: this.state.checkout.id,
             cartAccessToken: this.state.cart.accessToken,
@@ -312,7 +320,9 @@ class Checkout extends React.Component {
                 instrument: this.state.paymentInstrument.params || {}
             }
         };
+
         this.context.executeAction(createOrder, payload);
+      }
     };
 
     //
@@ -323,11 +333,43 @@ class Checkout extends React.Component {
         this.setState({showOrderErrorModal: false});
     };
 
+    handleStripePayModalCloseClick = () => {
+        this.setState({stripePayModal: false});
+    };
+
     requestNewCart = () => {
         this.context.executeAction(createCart);
     };
 
     //*** Template ***//
+
+    onToken = (token) => {
+      let payload = {
+          checkoutId: this.state.checkout.id,
+          cartAccessToken: this.state.cart.accessToken,
+          paymentDetails: {
+              amount: this.state.checkout.total,
+              currency: this.state.checkout.currency,
+              chargeType: this.state.checkout.paymentMethod,
+              provider: this.state.paymentInstrument.provider,
+              instrument: this.state.paymentInstrument.params || {}
+          },
+          token: token
+      };
+
+      axios.post(config.api.atlas.baseUrl + '/charge', {
+        source: token.id,
+        currency: this.state.checkout.currency,
+        amount: (this.state.checkout.total * 100),
+        checkOutId: this.state.checkout.id
+      }).then((response) => {
+        this.setState({stripePayModal: false});
+        this.context.executeAction(createOrder, payload);
+      }).catch(error => {
+        this.setState({stripePayModal: false});
+        this.context.executeAction(createOrder, payload);
+      });
+  }
 
     render() {
 
@@ -339,7 +381,31 @@ class Checkout extends React.Component {
         let routeParams = {locale: this.context.getStore(IntlStore).getCurrentLocale()}; // Base route params
 
         let orderModal = () => {
-            if (this.state.orderLoading) {
+          if (this.state.stripePayModal && config.stripePayments.enabled && this.state.paymentInstrument.provider === 'stripe') {
+            return (
+              <Modal title={intlStore.getMessage(intlData, 'title')} onCloseClick={this.handleStripePayModalCloseClick}>
+                  <div className="checkout__order-loading">
+                      <div className="checkout__order-loading-item">
+                          <Text size="small">
+                              <FormattedMessage
+                                  message={intlStore.getMessage(intlData, 'pleasePay')}
+                                  locales={intlStore.getCurrentLocale()} />.
+                          </Text>
+                      </div>
+                      <div className="checkout__order-loading-item">
+                      <StripeCheckout
+                          token={this.onToken}
+                          stripeKey={config.stripePayments.publicKey}
+                          locale="en"
+                          currency={this.state.checkout.currency}
+                          amount={(this.state.checkout.total)*100}
+                          billingAddress={false}
+                        />
+                      </div>
+                  </div>
+              </Modal>
+            );
+          } else if (this.state.orderLoading) {
                 return (
                     <Modal title={intlStore.getMessage(intlData, 'orderModalTitle')}>
                         <div className="checkout__order-loading">

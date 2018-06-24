@@ -2,9 +2,9 @@
 // Do not require this directly. Use ./src/config instead.
 export default {
     app: {
-        title: 'NICI Store',
+        title: 'Glitzy Vintage',
         locale: {
-            available: ['en', 'pt'],
+            available: ['en'],
             default: 'en'
         }
     },
@@ -35,5 +35,9 @@ export default {
         enabled: false,
         environment: 'https://api-test.switchpayments.com/v2/',
         publicKey: process.env.SWITCH_PUBLIC_KEY
+    },
+    stripePayments: {
+      enabled: true,
+      publicKey: 'pk_test_gMGWU90MQVbHwdTBX8C7zeOY' // env variable
     }
 };

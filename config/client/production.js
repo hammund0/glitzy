@@ -2,10 +2,10 @@
 // Do not require this directly. Use ./src/config instead.
 export default {
     app: {
-        title: 'NICI Store',
+        title: 'Glitzy',
         locale: {
-            available: ['en', 'pt'],
-            default: 'pt'
+            available: ['en'],
+            default: 'en'
         }
     },
     api: {
@@ -32,8 +32,12 @@ export default {
         signupFormPostURL: process.env.MAILCHIMP_SIGNUP_FORM_POST_URL
     },
     switchPayments: {
-        enabled: true,
+        enabled: false,
         environment: 'https://api.switchpayments.com/v2/',
         publicKey: process.env.SWITCH_PUBLIC_KEY
+    },
+    stripePayments: {
+      enabled: true,
+      publicKey: '' // env variable
     }
 };

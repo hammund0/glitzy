@@ -1,7 +1,10 @@
+@import '../../../../styles/variables.scss';
+
 .handhelds-header {
     display: flex;
     padding: 15px;
-    border-bottom: solid 1px #eeeeee;
+    background-color: $color-primary;
+    border-bottom: solid 1px #c09f80;
 }
 
 /*
@@ -29,7 +32,7 @@
     width: 100%;
     min-width: 80px;
     max-width: 80px;
-    height: 30px;
+    height: 37px;
     background: url('../../../../../static/logo.png') no-repeat;
     background-size: 100%;
 }
